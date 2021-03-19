@@ -27,3 +27,44 @@ test('mock implementation of a basic function ', () => {
   expect(mock).toHaveBeenCalledWith('Calling my mock function!');
   console.log(mock);
 });
+
+test('mock return value of a function one time', () => {
+  const mock = jest.fn();
+
+  mock.mockReturnValueOnce('Hello').mockReturnValueOnce('there!');
+
+  mock();
+  mock();
+
+  expect(mock).toHaveBeenCalledTimes(2);
+
+  mock('Hello', 'there', 'James');
+  expect(mock).toHaveBeenCalledWith('Hello', 'there', 'James');
+
+  mock('James');
+  expect(mock).toHaveBeenLastCalledWith('James');
+});
+
+test('mock implementation of a cuntion', () => {
+  const mock = jest.fn().mockImplementation(() => 'United States');
+  expect(mock('Location')).toBe('United States');
+  expect(mock).toHaveBeenCalledWith('Location');
+});
+
+test('spying using original implementation', () => {
+  const pizza = {
+    name: n => `Pizza name: ${n}`,
+  }
+  const spy = jest.spyOn(pizza, 'name');
+  expect(pizza.name('Cheese')).toBe('Pizza name: Cheese');
+  expect(spy).toHaveBeenCalledWith('Cheese');
+});
+
+test('spying using mockImplementation', () => {
+  const pizza = {
+    name: n => `Pizza name: ${n}`,
+  }
+  const spy = jest.spyOn(pizza, 'name');
+  spy.mockImplementation(n => 'Crazy pizza!');
+  expect(pizza.name('Cheese')).toBe('Crazy pizza!');
+});
